@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HekkaStore Z Raporu — 26.10.2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --desk: #E2E5DE;
+    --paper: #EEF1EC;
+    --paper-alt: #E4E9E3;
+    --ink: #1B2421;
+    --ink-muted: #5B6B63;
+    --rule: #B7C2BB;
+    --accent: #0E6A61;
+    --accent-soft: #D3E7E3;
+    --warn: #8A4C0E;
+    --warn-soft: #F3DCB9;
+    --good: #1F7A45;
+    --good-soft: #D8ECDF;
+    --critical: #A23B33;
+    --critical-soft: #F4DAD7;
+    --shadow: rgba(27, 36, 33, 0.14);
+    color-scheme: light dark;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --desk: #10130F; --paper: #1E2420; --paper-alt: #242B26; --ink: #E9EBE4;
+      --ink-muted: #9FADA4; --rule: #3A4238; --accent: #5FD1C4; --accent-soft: #26413C;
+      --warn: #E7AE64; --warn-soft: #3D2E14; --good: #6FCB94; --good-soft: #1C3324;
+      --critical: #E38A82; --critical-soft: #3B211E; --shadow: rgba(0, 0, 0, 0.45);
+    }
+  }
+  :root[data-theme="dark"] {
+    --desk: #10130F; --paper: #1E2420; --paper-alt: #242B26; --ink: #E9EBE4;
+    --ink-muted: #9FADA4; --rule: #3A4238; --accent: #5FD1C4; --accent-soft: #26413C;
+    --warn: #E7AE64; --warn-soft: #3D2E14; --good: #6FCB94; --good-soft: #1C3324;
+    --critical: #E38A82; --critical-soft: #3B211E; --shadow: rgba(0, 0, 0, 0.45);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--desk); color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    margin: 0; padding: clamp(20px, 5vw, 56px) 16px;
+    display: flex; justify-content: center;
+  }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  .receipt { width: 100%; max-width: 640px; background: var(--paper); box-shadow: 0 18px 40px -20px var(--shadow); border-radius: 4px; }
+  .perf { display: block; height: 13px; background-color: var(--paper);
+    background-image: radial-gradient(circle at 7px 6px, var(--desk) 3.3px, var(--paper) 3.7px);
+    background-size: 14px 13px; background-repeat: repeat-x; }
+  .perf.top { border-radius: 6px 6px 0 0; }
+  .perf.bottom { border-radius: 0 0 6px 6px; }
+
+  .content { padding: clamp(20px, 4vw, 36px) clamp(18px, 5vw, 40px) 28px; }
+
+  header.masthead { text-align: center; padding-bottom: 18px; border-bottom: 1px dashed var(--rule); margin-bottom: 22px; }
+  .eyebrow { font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: 0.16em; color: var(--accent); font-weight: 600; }
+  .store-name { font-size: clamp(24px, 5vw, 30px); font-weight: 700; margin: 6px 0 4px; text-wrap: balance; }
+  .store-sub { font-size: 13px; color: var(--ink-muted); margin-bottom: 14px; }
+  .meta-row { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--ink-muted); }
+  .meta-row b { color: var(--ink); font-weight: 600; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px; }
+  .kpi { background: var(--paper-alt); border-radius: 6px; padding: 14px 16px; }
+  .kpi-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 6px; }
+  .kpi-value { font-family: "IBM Plex Mono", monospace; font-size: clamp(20px, 4.4vw, 26px); font-weight: 600; color: var(--ink); }
+  .kpi-value.accent { color: var(--accent); }
+
+  .scope { font-size: 13px; line-height: 1.55; color: var(--ink-muted); background: var(--paper-alt); border-radius: 6px; padding: 12px 14px; margin-bottom: 26px; }
+  .scope b { color: var(--ink); font-weight: 600; }
+
+  section.block { margin-bottom: 26px; }
+  .block-title { font-size: 13px; font-weight: 600; letter-spacing: 0.03em; margin-bottom: 12px; display: flex; align-items: baseline; justify-content: space-between; }
+  .block-title .unit { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink-muted); font-weight: 400; }
+
+  .chart-wrap { position: relative; }
+  #chart-tooltip {
+    position: absolute; pointer-events: none; background: var(--ink); color: var(--paper);
+    font-family: "IBM Plex Mono", monospace; font-size: 11.5px; padding: 7px 10px; border-radius: 5px;
+    line-height: 1.5; transform: translate(-50%, -110%); white-space: nowrap; opacity: 0;
+    transition: opacity 0.1s ease; z-index: 5;
+  }
+  #chart-tooltip.show { opacity: 1; }
+
+  table.items { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.items th { text-align: left; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); font-weight: 600; padding-bottom: 8px; border-bottom: 1px solid var(--rule); }
+  table.items th.num, table.items td.num { text-align: right; }
+  table.items td { padding: 10px 0; border-bottom: 1px dotted var(--rule); vertical-align: top; }
+  table.items td.time { font-family: "IBM Plex Mono", monospace; color: var(--ink-muted); white-space: nowrap; }
+  table.items td.amount { font-family: "IBM Plex Mono", monospace; font-weight: 600; white-space: nowrap; }
+  .product-name { font-weight: 500; cursor: help; }
+  .product-city { display: block; color: var(--ink-muted); font-size: 11.5px; margin-top: 2px; }
+  .table-scroll { overflow-x: auto; }
+
+  .chip { display: inline-block; font-family: "IBM Plex Mono", monospace; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+  .chip.warn { background: var(--warn-soft); color: var(--warn); }
+  .chip.good { background: var(--good-soft); color: var(--good); }
+  .chip.critical { background: var(--critical-soft); color: var(--critical); }
+
+  .totals-row td { padding-top: 12px; border-bottom: none; border-top: 1px solid var(--rule); font-weight: 700; }
+  .totals-row .label { color: var(--ink-muted); font-weight: 600; }
+  .totals-row .amount { font-family: "IBM Plex Mono", monospace; font-size: 15px; }
+
+  footer { text-align: center; padding-top: 18px; border-top: 1px dashed var(--rule); color: var(--ink-muted); font-size: 11.5px; line-height: 1.6; }
+  footer .signoff { font-family: "IBM Plex Mono", monospace; letter-spacing: 0.1em; color: var(--ink); font-weight: 600; margin-bottom: 10px; font-size: 12px; }
+  #barcode { display: block; margin: 12px auto 10px; }
+
+  @media (max-width: 420px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .kpi { padding: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="receipt">
+  <span class="perf top"></span>
+  <div class="content">
+
+    <header class="masthead">
+      <div class="eyebrow">Z RAPORU · GÜNLÜK KAPANIŞ</div>
+      <div class="store-name">HekkaStore — Heldena</div>
+      <div class="store-sub">Amazon Selling Partner API üzerinden otomatik oluşturuldu</div>
+      <div class="meta-row">
+        <span>Rapor No <b class="mono">Z-20261026</b></span>
+        <span>Tarih <b class="mono">26.10.2026</b></span>
+        <span>Oluşturulma <b class="mono">10:08 CET</b></span>
+      </div>
+    </header>
+
+    <div class="kpi-grid">
+      
+    <div class="kpi">
+      <div class="kpi-label">Toplam Ciro</div>
+      <div class="kpi-value accent tnum">314,75 €</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Sipariş Sayısı</div>
+      <div class="kpi-value tnum">11</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Ortalama Sepet</div>
+      <div class="kpi-value tnum">28,61 €</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">İptal Edilen</div>
+      <div class="kpi-value tnum">0</div>
+    </div>
+    
+    </div>
+
+    <div class="scope">
+      Kapsam: <b>26.10.2026, 00:00–23:57 yerel (Europe/Berlin)</b>. 16 Amazon Avrupa mağazası + Shopify + BaseLinker (diğer kaynaklar) tarandı — sipariş gelen kaynaklar: <b>DE, FR, Shopify</b>. Para birimleri: <b>EUR</b>. İptal edilen siparişler listede gösterilir, ciroya ve ortalamaya dahil edilmez.
+    </div>
+
+    <section class="block">
+      <div class="block-title">Saat Bazında Sipariş Tutarları <span class="unit">yerel saat · Europe/Berlin</span></div>
+      <div class="chart-wrap">
+        <svg id="bar-chart" viewBox="0 0 560 200" width="100%" role="img" aria-label="Saat bazında sipariş tutarları grafiği"></svg>
+        <div id="chart-tooltip"></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="block-title">Sipariş Kalemleri <span class="unit">11 kayıt</span></div>
+      <div class="table-scroll">
+        <table class="items">
+          <thead>
+            <tr><th>Saat</th><th>Ürün</th><th class="num">Tutar</th><th>Durum</th></tr>
+          </thead>
+          <tbody><tr><td class="time">05:30</td><td><span class="product-name" title="HELDENA Auflaufformen rund aus Borosilikatglas, 2er Set - 1750 ml (Ø 25,5 cm) und 2680 ml (Ø 31 cm), transparente Glasformen für Aufläufe, Gratins und Beilagen">HELDENA Auflaufformen rund aus Borosilikatglas, 2er Set - 1…</span><span class="product-city">Langenhagen · DE · 302-3234403-4369105</span></td><td class="num amount tnum">18,04 €</td><td><span class="chip good">Shipped</span></td></tr>
+<tr><td class="time">08:50</td><td><span class="product-name" title="HELDENA Servierschalen mit Haube 3er-Set - 3x 390 ml stapelbare Glasschalen mit Deckel, für Desserts, Snacks, Fingerfood &amp; Aufbewahrung">HELDENA Servierschalen mit Haube 3er-Set - 3x 390 ml stapel…</span><span class="product-city">Neuhausen · DE · 302-5460726-6106767</span></td><td class="num amount tnum">20,89 €</td><td><span class="chip good">Shipped</span></td></tr>
+<tr><td class="time">10:47</td><td><span class="product-name" title="HELDENA Auflaufformen quadratisch aus Borosilikatglas, 2er Set - 1660 ml und 2900 ml, transparente Glasformen für Aufläufe, Lasagne, Gratins und Beilagen">HELDENA Auflaufformen quadratisch aus Borosilikatglas, 2er…</span><span class="product-city">Gauersheim · DE · 305-3511543-5145134</span></td><td class="num amount tnum">18,99 €</td><td><span class="chip good">Shipped</span></td></tr>
+<tr><td class="time">11:33</td><td><span class="product-name" title="HELDENA Servierschalen mit Haube 3er-Set - 3x 390 ml stapelbare Glasschalen mit Deckel, für Desserts, Snacks, Fingerfood &amp; Aufbewahrung">HELDENA Servierschalen mit Haube 3er-Set - 3x 390 ml stapel…</span><span class="product-city">Büren · DE · 028-8252220-9349141</span></td><td class="num amount tnum">19,85 €</td><td><span class="chip warn">Unshipped</span></td></tr>
+<tr><td class="time">13:03</td><td><span class="product-name" title="HELDENA Auflaufform mit Glasdeckel, rechteckig - 2750 ml, ca. 33,9 × 19 × 7 cm, tiefe Glasform für Lasagne, Aufläufe, Servieren und Aufbewahren, 2-teilig">HELDENA Auflaufform mit Glasdeckel, rechteckig - 2750 ml, c…</span><span class="product-city">Friesoythe · DE · 303-4257528-7385962</span></td><td class="num amount tnum">27,99 €</td><td><span class="chip good">Shipped</span></td></tr>
+<tr><td class="time">14:18</td><td><span class="product-name" title="HELDENA Lammwolle Bettdecke 220x240 cm - Steppbett mit 100% Lammwolle Füllung 350 g/m², Bezug 100% Baumwolle, Naturbettdecke waschbar bei 30 °C, Creme - Doppelbett XL">HELDENA Lammwolle Bettdecke 220x240 cm - Steppbett mit 100%…</span><span class="product-city">Rijeka · DE · 306-4551207-8352307</span></td><td class="num amount tnum">97,89 €</td><td><span class="chip warn">Unshipped</span></td></tr>
+<tr><td class="time">17:00</td><td><span class="product-name" title="LAV Belek Klassische Biergläser - 580ml - Pack 6">LAV Belek Klassische Biergläser - 580ml - Pack 6</span><span class="product-city">Niederkassel · DE · 305-4313749-0118700</span></td><td class="num amount tnum">19,74 €</td><td><span class="chip warn">Unshipped</span></td></tr>
+<tr><td class="time">17:57</td><td><span class="product-name" title="Pasabahce 95200 - Assiette à gâteau en verre large de 32,5 cm avec pied et dôme - Plateau de service décoratif pour desserts, cupcakes, biscuits, gâteaux avec couvercle">Assiette à gâteau en verre large de 32,5 cm avec pied et dô…</span><span class="product-city">Paris · FR · 406-8798954-3377103</span></td><td class="num amount tnum">36,74 €</td><td><span class="chip warn">Unshipped</span></td></tr>
+<tr><td class="time">19:21</td><td><span class="product-name" title="HELDENA Teeteller Ø 10,2 cm – 6er Set Untertassen aus Glas">HELDENA Teeteller Ø 10,2 cm – 6er Set Untertassen aus Glas</span><span class="product-city">Aurich · Shopify · Shopify #1227</span></td><td class="num amount tnum">21,39 €</td><td><span class="chip warn">Unfulfilled</span></td></tr>
+<tr><td class="time">20:43</td><td><span class="product-name" title="Heldena Terrakotta-Auflaufform 600 ml - handgefertigte Ofenform (28 × 15,5 cm), innen glasiert, backofen- &amp; grillgeeignet, für Aufläufe, Gemüse &amp; Meze">Heldena Terrakotta-Auflaufform 600 ml - handgefertigte Ofen…</span><span class="product-city">Köln · DE · 303-0316284-8893105</span></td><td class="num amount tnum">18,99 €</td><td><span class="chip good">Shipped</span></td></tr>
+<tr><td class="time">22:03</td><td><span class="product-name" title="Terrakotta Dolma-Beschwerungsstein Ø 21 cm | Handgefertigter Tonstein Beschwerungsdeckel für Topf | Hitzebeständige Kochhilfe für Sarma, gefüllte Weinblätter &amp; Gemüse | Natürlicher Topf-Beschwerer">Terrakotta Dolma-Beschwerungsstein Ø 21 cm | Handgefertigte…</span><span class="product-city">Stendal · DE · 028-5479459-2726734</span></td><td class="num amount tnum">14,24 €</td><td><span class="chip good">Shipped</span></td></tr></tbody>
+          <tfoot><tr class="totals-row"><td colspan="2" class="label">Toplam (iptaller hariç)</td><td class="num amount tnum">314,75 €</td><td></td></tr></tfoot>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      <div class="signoff">*** RAPOR SONU ***</div>
+      <svg id="barcode" width="220" height="34" aria-hidden="true"></svg>
+      <div>Kaynak: Amazon SP-API (Orders v0 + OrderItems)</div>
+      <div>Bu rapor otomatik oluşturulmuştur, resmi muhasebe belgesi değildir.</div>
+    </footer>
+
+  </div>
+  <span class="perf bottom"></span>
+</div>
+
+<script>
+(function () {
+  var chartData = [{"time": "05:30", "product": "HELDENA Auflaufformen rund aus Borosilikatglas, 2er Set - 1…", "amount": 18.04, "currency": "EUR"}, {"time": "08:50", "product": "HELDENA Servierschalen mit Haube 3er-Set - 3x 390 ml stapel…", "amount": 20.89, "currency": "EUR"}, {"time": "10:47", "product": "HELDENA Auflaufformen quadratisch aus Borosilikatglas, 2er…", "amount": 18.99, "currency": "EUR"}, {"time": "11:33", "product": "HELDENA Servierschalen mit Haube 3er-Set - 3x 390 ml stapel…", "amount": 19.85, "currency": "EUR"}, {"time": "13:03", "product": "HELDENA Auflaufform mit Glasdeckel, rechteckig - 2750 ml, c…", "amount": 27.99, "currency": "EUR"}, {"time": "14:18", "product": "HELDENA Lammwolle Bettdecke 220x240 cm - Steppbett mit 100%…", "amount": 97.89, "currency": "EUR"}, {"time": "17:00", "product": "LAV Belek Klassische Biergläser - 580ml - Pack 6", "amount": 19.74, "currency": "EUR"}, {"time": "17:57", "product": "Assiette à gâteau en verre large de 32,5 cm avec pied et dô…", "amount": 36.74, "currency": "EUR"}, {"time": "19:21", "product": "HELDENA Teeteller Ø 10,2 cm – 6er Set Untertassen aus Glas", "amount": 21.39, "currency": "EUR"}, {"time": "20:43", "product": "Heldena Terrakotta-Auflaufform 600 ml - handgefertigte Ofen…", "amount": 18.99, "currency": "EUR"}, {"time": "22:03", "product": "Terrakotta Dolma-Beschwerungsstein Ø 21 cm | Handgefertigte…", "amount": 14.24, "currency": "EUR"}];
+  var chartMax = 110;
+
+  function fmtNum(n) {
+    return n.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  var svgNS = "http://www.w3.org/2000/svg";
+  var svg = document.getElementById("bar-chart");
+  var W = 560, H = 200;
+  var padL = 34, padR = 10, padT = 14, padB = 26;
+  var plotW = W - padL - padR, plotH = H - padT - padB;
+  var inkMuted = getComputedStyle(document.documentElement).getPropertyValue("--ink-muted").trim();
+  var ruleColor = getComputedStyle(document.documentElement).getPropertyValue("--rule").trim();
+  var accentColor = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+
+  function makeEl(tag, attrs) {
+    var el = document.createElementNS(svgNS, tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+
+  if (!chartData.length) {
+    var msg = makeEl("text", { x: W / 2, y: H / 2, "text-anchor": "middle", "font-size": 13, "font-family": "IBM Plex Sans, sans-serif", fill: inkMuted });
+    msg.textContent = "Bugün için henüz sipariş yok.";
+    svg.appendChild(msg);
+  } else {
+    var niceStep = chartMax <= 40 ? 10 : chartMax <= 100 ? 20 : Math.ceil(chartMax / 4 / 10) * 10;
+    var ticks = [];
+    for (var t = 0; t < chartMax; t += niceStep) ticks.push(t);
+
+    ticks.forEach(function (t) {
+      var y = padT + plotH - (t / chartMax) * plotH;
+      svg.appendChild(makeEl("line", { x1: padL, x2: W - padR, y1: y, y2: y, stroke: ruleColor, "stroke-width": 1, "stroke-dasharray": "2,3" }));
+      var label = makeEl("text", { x: padL - 8, y: y + 3, "text-anchor": "end", "font-size": 9.5, "font-family": "IBM Plex Mono, monospace", fill: inkMuted });
+      label.textContent = t;
+      svg.appendChild(label);
+    });
+
+    var slot = plotW / chartData.length;
+    var barW = Math.min(30, slot * 0.5);
+    var tooltip = document.getElementById("chart-tooltip");
+    var wrap = document.querySelector(".chart-wrap");
+
+    chartData.forEach(function (o, i) {
+      var barH = (o.amount / chartMax) * plotH;
+      var x = padL + i * slot + (slot - barW) / 2;
+      var y = padT + plotH - barH;
+
+      var bar = makeEl("rect", { x: x, y: y, width: barW, height: barH, rx: 4, fill: accentColor, style: "cursor:pointer" });
+      svg.appendChild(bar);
+
+      if (chartData.length <= 14) {
+        var val = makeEl("text", { x: x + barW / 2, y: y - 6, "text-anchor": "middle", "font-size": 9.5, "font-family": "IBM Plex Mono, monospace", "font-weight": 600, fill: inkMuted });
+        val.textContent = fmtNum(o.amount);
+        svg.appendChild(val);
+      }
+
+      if (chartData.length <= 18) {
+        var label = makeEl("text", { x: x + barW / 2, y: H - 8, "text-anchor": "middle", "font-size": 9.5, "font-family": "IBM Plex Mono, monospace", fill: inkMuted });
+        label.textContent = o.time;
+        svg.appendChild(label);
+      }
+
+      var hit = makeEl("rect", { x: padL + i * slot, y: padT, width: slot, height: plotH, fill: "transparent", style: "cursor:pointer" });
+      hit.addEventListener("mousemove", function () {
+        var rect = wrap.getBoundingClientRect();
+        var scale = rect.width / W;
+        tooltip.innerHTML = o.time + " · " + o.product + "<br>" + fmtNum(o.amount) + " " + o.currency;
+        tooltip.style.left = (x + barW / 2) * scale + "px";
+        tooltip.style.top = (y * scale) + "px";
+        tooltip.classList.add("show");
+      });
+      hit.addEventListener("mouseleave", function () { tooltip.classList.remove("show"); });
+      svg.appendChild(hit);
+    });
+  }
+
+  var bc = document.getElementById("barcode");
+  var widths = [2,1,3,1,1,2,4,1,2,1,3,2,1,1,4,2,1,3,1,2,1,4,1,1,2,3,1,2,1,1,3,2,1,4,1,2];
+  var bx = 0;
+  widths.forEach(function (w, i) {
+    if (i % 2 === 0) bc.appendChild(makeEl("rect", { x: bx, y: 0, width: w, height: 26, fill: inkMuted }));
+    bx += w + 1.6;
+  });
+  bc.setAttribute("viewBox", "0 0 " + Math.ceil(bx) + " 30");
+  bc.setAttribute("width", Math.min(220, bx * 2));
+})();
+</script>
+</body>
+</html>
